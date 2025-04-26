@@ -123,22 +123,81 @@ string Tauler::inttoString(int fila, int col) const
 
 
 
-bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
-{
+bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti) {
     int n = 0;
     Posicio posicionsPossibles[12];
     getPosicionsPossibles(origen, n, posicionsPossibles);
 
-    for (int i = 0; i < n; i++)
-    {
-        if (desti == posicionsPossibles[i])
-        {
+    for (int i = 0; i < n; i++) {
+        if (desti == posicionsPossibles[i]) {
+            m_tauler[desti.getFila()][desti.getCol()] = m_tauler[origen.getFila()][origen.getCol()];
+            
+            if (desti.getFila() == 7 && m_tauler[desti.getFila()][desti.getCol()].getTipus() == TIPUS_NORMAL)
+            {
+                m_tauler[desti.getFila()][desti.getCol()].setTipus(TIPUS_DAMA);
+            }
+            if (desti.getFila() > origen.getFila())
+            {
+                if (desti.getCol() > origen.getCol())
+                {
+                    for (int i = origen.getFila()+1; i < desti.getFila(); i++)
+                    {
+                        for (int j = origen.getCol() + 1; j < desti.getCol(); j++)
+                        {
+                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
+                            {
+                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                            }
+                        }
+                    }
+                }
+                else
+                    for (int i = origen.getFila() + 1; i < desti.getFila(); i++)
+                    {
+                        for (int j = origen.getCol() - 1; j < desti.getCol(); j--)
+                        {
+                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
+                            {
+                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                            }
+                        }
+                    }
+
+            }
+            else
+                if (desti.getCol() > origen.getCol())
+                {
+                    for (int i = origen.getFila() - 1; i < desti.getFila(); i++)
+                    {
+                        for (int j = origen.getCol() + 1; j < desti.getCol(); j++)
+                        {
+                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
+                            {
+                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                            }
+                        }
+                    }
+                }
+                else
+                    for (int i = origen.getFila() - 1; i < desti.getFila(); i++)
+                    {
+                        for (int j = origen.getCol() - 1; j < desti.getCol(); j--)
+                        {
+                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
+                            {
+                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                            }
+                        }
+                    }
+            m_tauler[origen.getFila()][origen.getCol()].setTipus(TIPUS_EMPTY);
             return true;
+
         }
     }
 
     return false;
 }
+
 
 string Tauler::toString() const {
     for (int i = 7; i >= 0; i--)
@@ -208,7 +267,7 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
                 nPosicions++;
                 getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
             }
-            else {
+            else 
                 if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
                 {
                     Posicio posicio = inttoString(fila + 1, col - 1);
@@ -216,12 +275,46 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
                     nPosicions++;
                     getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
                 }
-            }
+            
+                else 
+                    if (m_tauler[fila - 1][col + 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+                    {
+                        Posicio posicio = inttoString(fila - 2, col + 2);
+                        posicionsPossibles[nPosicions] = posicio;
+                        nPosicions++;
+                        getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                    }
+                    else
+                        if (m_tauler[fila - 1][col - 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+                        {
+                            Posicio posicio = inttoString(fila - 2, col - 2);
+                            posicionsPossibles[nPosicions] = posicio;
+                            nPosicions++;
+                            getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                        }
+
+                        else
+                            if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
+                            {
+                                Posicio posicio = inttoString(fila - 1, col + 1);
+                                posicionsPossibles[nPosicions] = posicio;
+                                nPosicions++;
+                                getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                            }
+                            else {
+                                if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
+                                {
+                                    Posicio posicio = inttoString(fila - 1, col - 1);
+                                    posicionsPossibles[nPosicions] = posicio;
+                                    nPosicions++;
+                                    getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                                }
+                            }
 
     }
     else
-        if (m_tauler[fila][col].getColor() == COLOR_BLANC) {
-            if (m_tauler[fila - 1][col + 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+        if ((m_tauler[fila][col].getColor() == COLOR_NEGRE && fila < 8 && col < 8 && fila > 0 && col > 0)) {
+            if (m_tauler[fila - 1][col + 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
             {
                 Posicio posicio = inttoString(fila - 2, col + 2);
                 posicionsPossibles[nPosicions] = posicio;
@@ -229,7 +322,7 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
                 getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
             }
             else
-                if (m_tauler[fila - 1][col - 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+                if (m_tauler[fila - 1][col - 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
                 {
                     Posicio posicio = inttoString(fila - 2, col - 2);
                     posicionsPossibles[nPosicions] = posicio;
@@ -245,7 +338,7 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
                         nPosicions++;
                         getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
                     }
-                    else {
+                    else 
                         if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
                         {
                             Posicio posicio = inttoString(fila - 1, col - 1);
@@ -253,7 +346,39 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
                             nPosicions++;
                             getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
                         }
+                    
+                    if (m_tauler[fila + 1][col + 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+                    {
+                        Posicio posicio = inttoString(fila + 2, col + 2);
+                        posicionsPossibles[nPosicions] = posicio;
+                        nPosicions++;
+                        getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
                     }
+                    else
+                        if (m_tauler[fila + 1][col - 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+                        {
+                            Posicio posicio = inttoString(fila + 2, col - 2);
+                            posicionsPossibles[nPosicions] = posicio;
+                            nPosicions++;
+                            getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                        }
+
+                        else
+                            if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
+                            {
+                                Posicio posicio = inttoString(fila + 1, col + 1);
+                                posicionsPossibles[nPosicions] = posicio;
+                                nPosicions++;
+                                getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                            }
+                            else
+                                if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
+                                {
+                                    Posicio posicio = inttoString(fila + 1, col - 1);
+                                    posicionsPossibles[nPosicions] = posicio;
+                                    nPosicions++;
+                                    getPosicionsPossiblesDames(posicio, nPosicions, posicionsPossibles);
+                                }
         }
 
 }

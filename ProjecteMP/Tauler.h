@@ -18,6 +18,7 @@ public:
 	void NetejaTauler();
 	string toString() const;
 	void getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[]);
+	void bufar();
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
 };
