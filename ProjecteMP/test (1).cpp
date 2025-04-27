@@ -1,11 +1,11 @@
-#include "Tauler.cpp"
+#include "Tauler.h"
 #include "json (1).hpp"
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
+
 using json = nlohmann::json;
 
 const int N_FILES_TAULER = 8;

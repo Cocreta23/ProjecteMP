@@ -17,7 +17,6 @@ public:
 		}
 	}
 
-	void AfegirMoviment(Posicio pos, int fila, int col);
 private:
 	vector<vector<vector<Posicio>>> moviments;
 };

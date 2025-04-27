@@ -128,11 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Fitxa.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Moviment.cpp" />
     <ClCompile Include="Posicio.cpp" />
     <ClCompile Include="Tauler.cpp" />
     <ClCompile Include="Temp.cpp" />
+    <ClCompile Include="test (1).cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fitxa.h" />
