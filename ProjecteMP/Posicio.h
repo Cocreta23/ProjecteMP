@@ -14,6 +14,9 @@ public:
     bool operator==(const Posicio& posicio) const {
         return (fila == posicio.fila) && (col == posicio.col);
     }
+    bool operator!=(const Posicio& posicio) const {
+        return (fila != posicio.fila) && (col != posicio.col);
+    }
     int getFila() const { return fila; }
     int getCol() const { return col; }
     friend ostream& operator<<(ostream& os, const Posicio& pos) {
