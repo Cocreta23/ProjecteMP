@@ -319,7 +319,7 @@ float testMovimentsValids(json& outputGeneral)
         int nPosicionsPossibles;
         Posicio posicionsPosssibles[MAX_POSICIONS_POSSIBLES];
         tauler.getPosicionsPossibles(Posicio(posicions[i]), nPosicionsPossibles, posicionsPosssibles);
-        outputParcial << "Posicions possibles obitngudes: ";
+        outputParcial << "Posicions possibles obtingudes: ";
         mostraArray(posicionsPosssibles, nPosicionsPossibles, outputParcial);
         outputParcial << "----------" << endl;
         bool correcte = igualArrays(posicionsPosssiblesEperades[i], nPosicionsEsperades[i], posicionsPosssibles, nPosicionsPossibles);

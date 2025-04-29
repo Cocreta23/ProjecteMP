@@ -11,14 +11,15 @@ class Tauler {
 public:
 	void inicialitza(const string& nomFitxer);
 	void actualitzaMovimentsValids();
-	void getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[]);
+	void getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], bool despresMenjar, bool daldreta, bool dalsquerra, bool baixdreta, bool baixsquerra);
 	void getPosicionsPossibles(const Posicio& origen,int& nPosicions, Posicio posicionsPossibles[]);
 	bool mouFitxa(const Posicio& origen, const Posicio& desti);
 	string inttoString(int fila, int col) const;
 	void NetejaTauler();
 	string toString() const;
-	void getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[]);
-	void bufar();
+	void getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], int fet, ColorFitxa color);
+	bool potCapturar(int fila, int col, int dirFila, int dirCol);
+
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
 };

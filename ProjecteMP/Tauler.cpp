@@ -1,4 +1,4 @@
-#include "Tauler.h"
+ï»¿#include "Tauler.h"
 #include <fstream>
 #include <sstream>
 
@@ -59,81 +59,6 @@ string Tauler::inttoString(int fila, int col) const {
 
 
 
-bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti) {
-    int n = 0;
-    Posicio posicionsPossibles[12];
-    getPosicionsPossibles(origen, n, posicionsPossibles);
-
-    for (int i = 0; i < n; i++) {
-        if (desti == posicionsPossibles[i]) {
-            
-            if (desti.getFila() == 7 && m_tauler[desti.getFila()][desti.getCol()].getTipus() == TIPUS_NORMAL)
-            {
-                m_tauler[desti.getFila()][desti.getCol()].setTipus(TIPUS_DAMA);
-            }
-            if (desti.getFila() > origen.getFila())
-            {
-                if (desti.getCol() > origen.getCol())
-                {
-                    for (int i = origen.getFila()+1; i < desti.getFila(); i++)
-                    {
-                        for (int j = origen.getCol() + 1; j < desti.getCol(); j++)
-                        {
-                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
-                            {
-                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
-                            }
-                        }
-                    }
-                }
-                else
-                    for (int i = origen.getFila() + 1; i < desti.getFila(); i++)
-                    {
-                        for (int j = origen.getCol() - 1; j < desti.getCol(); j--)
-                        {
-                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
-                            {
-                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
-                            }
-                        }
-                    }
-
-            }
-            else
-                if (desti.getCol() > origen.getCol())
-                {
-                    for (int i = origen.getFila() - 1; i < desti.getFila(); i++)
-                    {
-                        for (int j = origen.getCol() + 1; j < desti.getCol(); j++)
-                        {
-                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
-                            {
-                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
-                            }
-                        }
-                    }
-                }
-                else
-                    for (int i = origen.getFila() - 1; i < desti.getFila(); i++)
-                    {
-                        for (int j = origen.getCol() - 1; j < desti.getCol(); j--)
-                        {
-                            if (m_tauler[i][j].getTipus() != m_tauler[origen.getFila()][origen.getCol()].getTipus() && m_tauler[i][j].getTipus() != TIPUS_EMPTY)
-                            {
-                                m_tauler[i][j].setTipus(TIPUS_EMPTY);
-                            }
-                        }
-                    }
-            m_tauler[desti.getFila()][desti.getCol()] = m_tauler[origen.getFila()][origen.getCol()];
-            m_tauler[origen.getFila()][origen.getCol()].setTipus(TIPUS_EMPTY);
-            actualitzaMovimentsValids();
-            return true;
-
-        }
-    }
-
-    return false;
-}
 
 
 string Tauler::toString() const {
@@ -161,283 +86,224 @@ string Tauler::toString() const {
 }
 
 
-void Tauler::getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[])
+void Tauler::getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], int fet, ColorFitxa Color)
 {
-    int hola = nPosicions;
     int fila = origen.getFila();
     int col = origen.getCol();
 
-    if (m_tauler[fila][col].getColor() == COLOR_BLANC && fila < 8 && col < 8 && fila > 0 && col > 0) {
+    int direccio = (Color == COLOR_BLANC) ? 1 : -1;
 
-        if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY && fila + 1 < 8 && col + 1 < 8) {
-            string posicio = inttoString(fila + 1, col + 1);
-            Posicio pos(posicio);
-            posicionsPossibles[nPosicions] = pos;
+    if (fila + direccio >= 0 && fila + direccio < 8 && col + 1 < 8) {
+        if (m_tauler[fila + direccio][col + 1].getTipus() == TIPUS_EMPTY && fet == 0) {
+            string posicio = inttoString(fila + direccio, col + 1);
+            posicionsPossibles[nPosicions] = Posicio(posicio);
             nPosicions++;
         }
-        else if (m_tauler[fila + 2][col + 2].getTipus() == TIPUS_EMPTY &&
-            m_tauler[fila + 1][col + 1].getColor() != COLOR_BLANC && fila + 2 < 8 && col + 2 < 8) {
-            string posicio = inttoString(fila + 2, col + 2);
-            Posicio pos(posicio);
-            posicionsPossibles[nPosicions] = pos;
+        else if (fila + 2 * direccio >= 0 && fila + 2 * direccio < 8 && col + 2 < 8
+            && m_tauler[fila + 2 * direccio][col + 2].getTipus() == TIPUS_EMPTY
+            && m_tauler[fila + direccio][col + 1].getColor() != Color) {
+            string posicio = inttoString(fila + 2 * direccio, col + 2);
+            posicionsPossibles[nPosicions] = Posicio(posicio);
             nPosicions++;
-            getPosicionsPossibles(pos, nPosicions, posicionsPossibles);
-        }
-
-        if (m_tauler[fila + 1][col - 1].getTipus() == TIPUS_EMPTY && fila + 1 < 8 && col - 1 > 0) {
-            string posicio = inttoString(fila + 1, col - 1);
-            Posicio pos(posicio);
-            posicionsPossibles[nPosicions] = pos;
-            nPosicions++;
-        }
-        else if (m_tauler[fila + 2][col - 2].getTipus() == TIPUS_EMPTY &&
-            m_tauler[fila + 1][col - 1].getColor() != COLOR_BLANC && fila + 2 < 8 && col - 2 > 0) {
-            string posicio = inttoString(fila + 2, col - 2);
-            Posicio pos(posicio);
-            posicionsPossibles[nPosicions] = pos;
-            nPosicions++;
-            getPosicionsPossibles(pos, nPosicions, posicionsPossibles);
+            fet++;
+            getPosicionsPossiblesNorm(Posicio(posicio), nPosicions, posicionsPossibles, fet, Color);
+            
         }
     }
-    else
-        if (fila < 8 && col < 8 && fila > 0 && col > 0 && m_tauler[fila][col].getColor() != COLOR_BLANC) {
 
-            if (col + 1 < 8 && fila - 1 > 0 && m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY) {
-                string posicio = inttoString(fila - 1, col + 1);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-            }
-            else if (m_tauler[fila - 2][col + 2].getTipus() == TIPUS_EMPTY &&
-                m_tauler[fila - 1][col + 1].getColor() != COLOR_NEGRE && col + 2 < 8 && fila - 2 > 0) {
-                string posicio = inttoString(fila - 2, col + 2);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-                getPosicionsPossibles(pos, nPosicions, posicionsPossibles);
-            }
-
-            if (m_tauler[fila - 1][col - 1].getTipus() == TIPUS_EMPTY && fila -1 > 0 && col - 1 > 0) {
-                string posicio = inttoString(fila - 1, col - 1);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-            }
-            else if (m_tauler[fila - 2][col - 2].getTipus() == TIPUS_EMPTY &&
-                m_tauler[fila - 1][col - 1].getColor() != COLOR_NEGRE && col - 2 > 0 && fila - 2 > 0) {
-                string posicio = inttoString(fila - 2, col - 2);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-                getPosicionsPossibles(pos, nPosicions, posicionsPossibles);
-            }
+    if (fila + direccio >= 0 && fila + direccio < 8 && col - 1 >= 0) {
+        if (m_tauler[fila + direccio][col - 1].getTipus() == TIPUS_EMPTY && fet == 0) {
+            string posicio = inttoString(fila + direccio, col - 1);
+            posicionsPossibles[nPosicions] = Posicio(posicio);
+            nPosicions++;
         }
+        else if (fila + 2 * direccio >= 0 && fila + 2 * direccio < 8 && col - 2 >= 0
+            && m_tauler[fila + 2 * direccio][col - 2].getTipus() == TIPUS_EMPTY
+            && m_tauler[fila + direccio][col - 1].getColor() != Color) {
+            string posicio = inttoString(fila + 2 * direccio, col - 2);
+            posicionsPossibles[nPosicions] = Posicio(posicio);
+            nPosicions++;
+            fet++;
+            getPosicionsPossiblesNorm(Posicio(posicio), nPosicions, posicionsPossibles, fet, Color);
+        }
+    }
 }
 
 
 
 
-
-
-void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[])
-{
+void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], bool despresMenjar, bool daldreta, bool dalsquerra, bool baixdreta, bool baixsquerra) {
     int fila = origen.getFila();
     int col = origen.getCol();
-    if (m_tauler[fila][col].getColor() == COLOR_BLANC && fila < 8 && col < 8 && fila > 0 && col > 0)
+    ColorFitxa colorFitxa = m_tauler[fila][col].getColor();
+    if (despresMenjar)
     {
-        if (m_tauler[fila + 1][col + 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+        for (int i = 0; i < N_FILES; i++)
         {
-            string posicio = inttoString(fila + 2, col + 2);
-            Posicio pos(posicio);
-            posicionsPossibles[nPosicions] = pos;
-
-            getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-        }
-        else
-            if (m_tauler[fila + 1][col - 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
+            if (fila + i +1 < 8 && col + i + 1 < 8 && m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i][col + i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila + i + 1][col + i + 1].getTipus() == TIPUS_EMPTY)
             {
-                string posicio = inttoString(fila + 2, col - 2);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-                getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
+                daldreta = true;
             }
-
             else
-                if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
-                {
-                    string posicio = inttoString(fila + 1, col + 1);
-                    Posicio pos(posicio);
-                    posicionsPossibles[nPosicions] = pos;
-                    nPosicions++;
-                    getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
+                if (fila + i + 1 < 8 && col - i - 1 >= 0 && m_tauler[fila + i][col - i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i][col - i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila + i + 1][col - i - 1].getTipus() == TIPUS_EMPTY) {
+                    dalsquerra = true;
                 }
                 else
-                    if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
+                    if (fila - i - 1 >= 0 && col + i + 1 < 8 && m_tauler[fila - i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila - i][col + i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila - i - 1][col + i + 1].getTipus() == TIPUS_EMPTY)
                     {
-                        string posicio = inttoString(fila + 1, col - 1);
-                        Posicio pos(posicio);
-                        posicionsPossibles[nPosicions] = pos;
-                        nPosicions++;
-                        getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
+                        baixdreta = true;
                     }
-
                     else
-                        if (m_tauler[fila - 1][col + 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-                        {
-                            string posicio = inttoString(fila - 2, col + 2);
-                            Posicio pos(posicio);
-                            posicionsPossibles[nPosicions] = pos;
-                            nPosicions++;
-                            getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
+                        if (fila - i - 1 > 0 && col - i - 1 >= 0 && m_tauler[fila - i][col - i].getTipus() != TIPUS_EMPTY && m_tauler[fila - i][col - i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila - i - 1][col - i - 1].getTipus() == TIPUS_EMPTY) {
+                            baixsquerra = true;
                         }
-                        else
-                            if (m_tauler[fila - 1][col - 1].getColor() == COLOR_NEGRE && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-                            {
-                                string posicio = inttoString(fila - 2, col - 2);
-                                Posicio pos(posicio);
-                                posicionsPossibles[nPosicions] = pos;
-                                nPosicions++;
-                                getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                            }
-
-                            else
-                                if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
-                                {
-                                    string posicio = inttoString(fila - 1, col + 1);
-                                    Posicio pos(posicio);
-                                    posicionsPossibles[nPosicions] = pos;
-                                    nPosicions++;
-                                    getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                                }
-                                else {
-                                    if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
-                                    {
-                                        string posicio = inttoString(fila - 1, col - 1);
-                                        Posicio pos(posicio);
-                                        posicionsPossibles[nPosicions] = pos;
-                                        nPosicions++;
-                                        getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                                    }
-                                }
-
+        }
     }
-    else
-        if ((m_tauler[fila][col].getColor() == COLOR_NEGRE && fila < 8 && col < 8 && fila > 0 && col > 0)) {
-            if (m_tauler[fila - 1][col + 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-            {
-                string posicio = inttoString(fila - 2, col + 2);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-                getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-            }
-            else
-                if (m_tauler[fila - 1][col - 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-                {
-                    string posicio = inttoString(fila - 2, col - 2);
-                    Posicio pos(posicio);
-                    posicionsPossibles[nPosicions] = pos;
-                    nPosicions++;
-                    getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                }
-
-                else
-                    if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
-                    {
-                        string posicio = inttoString(fila - 1, col + 1);
-                        Posicio pos(posicio);
-                        posicionsPossibles[nPosicions] = pos;
-                        nPosicions++;
-                        getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                    }
-                    else
-                        if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY)
-                        {
-                            string posicio = inttoString(fila - 1, col - 1);
-                            Posicio pos(posicio);
-                            posicionsPossibles[nPosicions] = pos;
-                            nPosicions++;
-                            getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                        }
-
-            if (m_tauler[fila + 1][col + 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-            {
-                string posicio = inttoString(fila + 2, col + 2);
-                Posicio pos(posicio);
-                posicionsPossibles[nPosicions] = pos;
-                nPosicions++;
-                getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-            }
-            else
-                if (m_tauler[fila + 1][col - 1].getColor() == COLOR_BLANC && m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY)
-                {
-                    string posicio = inttoString(fila + 2, col - 2);
-                    Posicio pos(posicio);
-                    posicionsPossibles[nPosicions] = pos;
-                    nPosicions++;
-                    getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                }
-
-                else
-                    if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
-                    {
-                        string posicio = inttoString(fila + 1, col + 1);
-                        Posicio pos(posicio);
-                        posicionsPossibles[nPosicions] = pos;
-                        nPosicions++;
-                        getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                    }
-                    else
-                        if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY)
-                        {
-                            string posicio = inttoString(fila + 1, col - 1);
-                            Posicio pos(posicio);
-                            posicionsPossibles[nPosicions] = pos;
-                            nPosicions++;
-                            getPosicionsPossiblesDames(pos, nPosicions, posicionsPossibles);
-                        }
-        }
-
+    
+    //adalt a la dreta
+    if (m_tauler[fila + 1][col + 1].getTipus() == TIPUS_EMPTY && fila < 8 && col < 8 && daldreta)
+    {
+        string posicio = inttoString(fila + 1, col + 1);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 0, 1,0,0,0);
+    }
+    
+        //abaix a la dreta
+    if (m_tauler[fila - 1][col + 1].getTipus() == TIPUS_EMPTY && fila > 0 && col < 8 && baixdreta)
+    {
+        string posicio = inttoString(fila - 1, col + 1);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 0, 0, 0, 1, 0);
+    }
+        
+            //a baix esquerra
+    if (m_tauler[fila - 1][col - 1].getTipus() == TIPUS_EMPTY && fila > 0 && col > 0 && baixsquerra)
+    {
+        string posicio = inttoString(fila - 1, col - 1);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 0, 0, 0, 0, 1);
+    }
+            
+    //adalt a l'esquerra
+    if (m_tauler[fila + 1][col - 1].getTipus() == TIPUS_EMPTY && fila < 8 && col > 0 && dalsquerra)
+    {
+        string posicio = inttoString(fila + 1, col - 1);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 0,0,1,0,0);
+    }
+                
+    if (m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY && m_tauler[fila + 2][col + 2].getTipus() == TIPUS_EMPTY && m_tauler[fila + 1][col + 1].getColor() != colorFitxa
+    && fila + 2 < 8 && col + 2 < 8 && daldreta)
+    {
+    string posicio = inttoString(fila + 2, col + 2);
+    posicionsPossibles[nPosicions] = Posicio(posicio);
+    nPosicions++;
+    getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 1, 0, 0, 0, 0);
+    }
+    
+    if (m_tauler[fila + 1][col - 1].getTipus() != TIPUS_EMPTY && m_tauler[fila + 2][col - 2].getTipus() == TIPUS_EMPTY && m_tauler[fila + 1][col - 1].getColor() != colorFitxa
+        && fila + 2 < 8 && col - 2 > 0 && dalsquerra)
+    {
+        string posicio = inttoString(fila + 2, col - 2);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 1, 0, 0, 0, 0);
+    }
+        
+    if (m_tauler[fila - 1][col + 1].getTipus() != TIPUS_EMPTY && m_tauler[fila - 2][col + 2].getTipus() == TIPUS_EMPTY && m_tauler[fila - 1][col + 1].getColor() != colorFitxa
+        && fila - 2 > 0 && col + 2 < 8 && baixdreta)
+    {
+        string posicio = inttoString(fila - 2, col + 2);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 1, 0, 0, 0, 0);
+    }
+            
+    if (m_tauler[fila - 1][col - 1].getTipus() != TIPUS_EMPTY && m_tauler[fila - 2][col - 2].getTipus() == TIPUS_EMPTY && m_tauler[fila - 1][col - 1].getColor() != colorFitxa
+        && fila + 2 < 8 && col + 2 < 8 && baixsquerra)
+    {
+        string posicio = inttoString(fila - 2, col - 2);
+        posicionsPossibles[nPosicions] = Posicio(posicio);
+        nPosicions++;
+        getPosicionsPossiblesDames(Posicio(posicio), nPosicions, posicionsPossibles, 1, 0, 0, 0, 0);
+    }
 }
+
+bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti) {
+    int n = 0;
+    Posicio posicionsPossibles[12];
+    getPosicionsPossibles(origen, n, posicionsPossibles);
+
+    for (int i = 0; i < n; i++) {
+        if (desti == posicionsPossibles[i]) {
+            int filaOrig = origen.getFila();
+            int colOrig = origen.getCol();
+            int filaDest = desti.getFila();
+            int colDest = desti.getCol();
+
+            m_tauler[filaDest][colDest] = m_tauler[filaOrig][colOrig];
+            m_tauler[filaOrig][colOrig].setTipus(TIPUS_EMPTY);
+
+            if ((filaDest == 7 && m_tauler[filaDest][colDest].getColor() == COLOR_BLANC) ||
+                (filaDest == 0 && m_tauler[filaDest][colDest].getColor() == COLOR_NEGRE)) {
+                m_tauler[filaDest][colDest].setTipus(TIPUS_DAMA);
+            }
+
+            if (abs(filaDest - filaOrig) > 1) {
+                int filaCaptura = (filaDest + filaOrig) / 2;
+                int colCaptura = (colDest + colOrig) / 2;
+                m_tauler[filaCaptura][colCaptura].setTipus(TIPUS_EMPTY);
+            }
+
+            actualitzaMovimentsValids();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 
 
 void Tauler::getPosicionsPossibles(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[])
 {
     int fila = origen.getFila();
     int col = origen.getCol();
+    ColorFitxa color = m_tauler[fila][col].getColor();
+    nPosicions = 0;
+    int fet = 0;
     if (m_tauler[fila][col].getTipus() == TIPUS_DAMA)
     {
-        getPosicionsPossiblesDames(origen, nPosicions, posicionsPossibles);
+        getPosicionsPossiblesDames(origen, nPosicions, posicionsPossibles, 0, 1,1,1,1);
     }
     else
         if (m_tauler[fila][col].getTipus() == TIPUS_NORMAL)
         {
-            getPosicionsPossiblesNorm(origen, nPosicions, posicionsPossibles);
+            getPosicionsPossiblesNorm(origen, nPosicions, posicionsPossibles, fet, color);
         }
 }
 
-void Tauler::actualitzaMovimentsValids() {
+void Tauler::actualitzaMovimentsValids()
+{
     for (int i = 0; i < N_FILES; i++)
     {
-        for (int ç = 0; ç < N_COLUMNES; ç++)
+        for (int j = 0; j < N_COLUMNES; j++)
         {
-            TipusFitxa tipus = m_tauler[i][ç].getTipus();
-            Posicio pos = inttoString(i, ç);
-            Posicio posicionsPossibles[N_FILES];
-            int nPos = 0;
-            if (tipus == TIPUS_NORMAL)
-            {
-                getPosicionsPossibles(pos, nPos, posicionsPossibles);
+            if (m_tauler[i][j].getTipus() != TIPUS_EMPTY) {
+                Posicio posicioActual(inttoString(i, j));
+                int nPos = 0;
+                Posicio posicionsPossibles[15];
+                getPosicionsPossibles(posicioActual, nPos, posicionsPossibles);
             }
-            else
-                if (tipus == TIPUS_DAMA)
-                {
-                    getPosicionsPossiblesDames(pos, nPos, posicionsPossibles);
-                }
         }
     }
 }
+
 
 
 
