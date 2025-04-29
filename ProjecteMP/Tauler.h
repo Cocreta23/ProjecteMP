@@ -18,8 +18,12 @@ public:
 	void NetejaTauler();
 	string toString() const;
 	void getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], int fet, ColorFitxa color);
-	bool potCapturar(int fila, int col, int dirFila, int dirCol);
+	bool daltdreta(Posicio pos);
+	bool dalesquerra(Posicio pos);
+	bool baixadreta(Posicio pos);
+	bool baixesquerra(Posicio pos);
 
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
+
 };

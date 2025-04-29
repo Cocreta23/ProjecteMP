@@ -140,7 +140,7 @@ void Tauler::getPosicionsPossiblesDames(const Posicio& origen, int& nPosicions, 
     {
         for (int i = 0; i < N_FILES; i++)
         {
-            if (fila + i +1 < 8 && col + i + 1 < 8 && m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i][col + i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila + i + 1][col + i + 1].getTipus() == TIPUS_EMPTY)
+            if (fila + i + 1 < 8 && col + i + 1 < 8 && m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i][col + i].getColor() != m_tauler[fila][col].getColor() && m_tauler[fila + i + 1][col + i + 1].getTipus() == TIPUS_EMPTY)
             {
                 daldreta = true;
             }
