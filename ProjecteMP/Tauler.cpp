@@ -227,7 +227,6 @@ void Tauler::getPosicionsPossiblesDames(const Posicio origen, int& nPosicions, P
 
         if (col + 2 < 8 && fila + 2 < 8)
         {
-
             //menjar DalDreta
             if (m_tauler[fila + 1][col + 1].getTipus() != TIPUS_EMPTY &&
                 m_tauler[fila + 1][col + 1].getColor() != color &&
@@ -258,7 +257,10 @@ void Tauler::getPosicionsPossiblesDames(const Posicio origen, int& nPosicions, P
             }
         }
 
+
+
         //menjar dalsquerra
+
 
 
         //menjar baixsquerra
@@ -340,66 +342,10 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti) {
                 }
             }
         else {
-            if (color == COLOR_BLANC)
-            {
-                if (tipus == TIPUS_DAMA) {
-
-                }
-                else
-                    for (int i = 0; i < N_FILES; i++)
-                    {
-                        for (int j = 0; j < N_FILES; j++)
-                        {
-                            if (i + 2 < 8 && j + 2 < 8 &&
-                                m_tauler[i][j].getColor() == color &&
-                                m_tauler[i + 1][j + 1].getTipus() != TIPUS_EMPTY &&
-                                m_tauler[i + 2][j + 2].getTipus() == TIPUS_EMPTY &&
-                                m_tauler[i + 1][j + 1].getColor() != color)
-                            {
-                                bufar(Posicio(inttoString(i, j)));
-                            }
-
-                            if ( i + 2 < 8 && j - 2 >= 0 && 
-                                m_tauler[i][j].getColor() == color &&
-                                m_tauler[i + 1][j - 1].getTipus() != TIPUS_EMPTY &&
-                                m_tauler[i + 2][j - 2].getTipus() == TIPUS_EMPTY &&
-                                m_tauler[i + 1][j - 1].getColor() != color)
-                            {
-                                bufar(Posicio(inttoString(i, j)));
-                            }
-
-                        }
-                    }
-            }
-            else {
-                if (tipus == TIPUS_DAMA) {
-
-                }
-                else
-                    for (int i = 0; i < N_FILES; i++)
-                    {
-                        for (int j = 0; j < N_FILES; j++)
-                        {
-                            if (i - 2 < 8 && j + 2 < 8 &&
-                                m_tauler[i - 1][j + 1].getTipus() != TIPUS_EMPTY &&
-                                m_tauler[i - 2][j + 2].getTipus() == TIPUS_EMPTY &&
-                                m_tauler[i - 1][j + 1].getColor() != color)
-                            {
-                                bufar(Posicio(inttoString(i, j)));
-                            }
-
-                            if (i - 2 < 8 && j - 2 >= 0 &&
-                                m_tauler[i - 1][j - 1].getTipus() != TIPUS_EMPTY &&
-                                m_tauler[i - 2][j - 2].getTipus() == TIPUS_EMPTY &&
-                                m_tauler[i - 1][j - 1].getColor() != color)
-                            {
-                                bufar(Posicio(inttoString(i, j)));
-                            }
-
-                        }
-                    }
-            }
+            bufar2(color);
         }
+            
+        
 
             if ((filaDest == 7 && m_tauler[filaDest][colDest].getColor() == COLOR_BLANC) ||
                 (filaDest == 0 && m_tauler[filaDest][colDest].getColor() == COLOR_NEGRE)) {
@@ -413,9 +359,6 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti) {
     }
     return false;
 }
-
-
-
 
 
 
@@ -449,18 +392,24 @@ void Tauler::EliminaFitxes(Posicio origen, Posicio desti, Posicio PosicionsPossi
                 bool sortir_bucle = false;
                 for (int j = 0; j < N_FILES; j++)
                 {
-                    if (fila + i + 1 < 8 && col + i + 1 < 8 && Posicio(inttoString(fila + i + 1, col + i + 1)) == PosicionsPossibles[j])
+                    if (fila + i + 1 < 8 && col + i + 1 < 8 && (Posicio(inttoString(fila + i + 1, col + i + 1)) == PosicionsPossibles[j] || Posicio(inttoString(fila + i + 1, col + i + 1)) == origen))
                     {
-                        m_tauler[fila + i][col + i].setTipus(TIPUS_EMPTY);
+                        if(m_tauler[fila+i][col+i].getTipus() != TIPUS_EMPTY)
+                        {
+                            m_tauler[fila + i][col + i].setTipus(TIPUS_EMPTY);
+                        }
                         posicioAct = inttoString(fila + i + 1, col + i + 1);
                         fila = posicioAct.getFila();
                         col = posicioAct.getCol();
                         sortir_bucle = true;
                         break;
                     }
-                    if (fila + i + 1 < 8 && col - i - 1 >= 0 && Posicio(inttoString(fila + i + 1, col - i - 1)) == PosicionsPossibles[j])
+                    if (fila + i + 1 < 8 && col - i - 1 >= 0 && (Posicio(inttoString(fila + i + 1, col - i - 1)) == PosicionsPossibles[j] || Posicio(inttoString(fila + i + 1, col - i - 1)) == origen))
                     {
-                        m_tauler[fila + i][col - i].setTipus(TIPUS_EMPTY);
+                        if (m_tauler[fila + i][col - i].getTipus() != TIPUS_EMPTY)
+                        {
+                            m_tauler[fila + i][col - i].setTipus(TIPUS_EMPTY);
+                        }
                         posicioAct = inttoString(fila + i + 1, col - i - 1);
                         fila = posicioAct.getFila();
                         col = posicioAct.getCol();
@@ -468,9 +417,12 @@ void Tauler::EliminaFitxes(Posicio origen, Posicio desti, Posicio PosicionsPossi
                         break;
 
                     }
-                    if (fila - i - 1 >= 0 && col + i + 1 < 8 && Posicio(inttoString(fila - i - 1, col + i + 1)) == PosicionsPossibles[j])
+                    if (fila - i - 1 >= 0 && col + i + 1 < 8 && (Posicio(inttoString(fila - i - 1, col + i + 1)) == PosicionsPossibles[j] || Posicio(inttoString(fila - i - 1, col + i + 1)) == origen))
                     {
-                        m_tauler[fila - i][col + i].setTipus(TIPUS_EMPTY);
+                        if (m_tauler[fila - i][col + i].getTipus() != TIPUS_EMPTY)
+                        {
+                            m_tauler[fila - i][col + i].setTipus(TIPUS_EMPTY);
+                        }
                         posicioAct = inttoString(fila - i - 1, col + i + 1);
                         fila = posicioAct.getFila();
                         col = posicioAct.getCol();
@@ -478,9 +430,12 @@ void Tauler::EliminaFitxes(Posicio origen, Posicio desti, Posicio PosicionsPossi
                         break;
 
                     }
-                    if (fila - i - 1 >= 0 && col - i - 1 >= 0 && Posicio(inttoString(fila - i - 1, col - i - 1)) == PosicionsPossibles[j])
+                    if (fila - i - 1 >= 0 && col - i - 1 >= 0 && (Posicio(inttoString(fila - i - 1, col - i - 1)) == PosicionsPossibles[j] || Posicio(inttoString(fila - i - 1, col - i - 1)) == origen))
                     {
-                        m_tauler[fila - i][col - i].setTipus(TIPUS_EMPTY);
+                        if (m_tauler[fila - i][col - i].getTipus() != TIPUS_EMPTY)
+                        {
+                            m_tauler[fila - i][col - i].setTipus(TIPUS_EMPTY);
+                        }
                         posicioAct = inttoString(fila - i - 1, col - i - 1);
                         fila = posicioAct.getFila();
                         col = posicioAct.getCol();
@@ -542,19 +497,31 @@ bool Tauler::bufar(Posicio pos)
     {
         for (int i = 0; i < N_FILES; i++)
         {
-            if (fila + i + 1 < 8 && col + i + 1 < 8 && m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i + 1][col + i + 1].getColor() != color) {
+            if (fila + i + 1 < 8 && col + i + 1 < 8 &&
+                m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY &&
+                m_tauler[fila + i][col + i].getColor() != color &&
+                m_tauler[fila + i + 1][col + i + 1].getTipus() == TIPUS_EMPTY) {
                 return true;
             }
-            else 
-                if (fila + i + 1 < 8 && col - i - 1 >= 0 && m_tauler[fila + i][col - i].getTipus() != TIPUS_EMPTY && m_tauler[fila + i + 1][col - i - 1].getColor() != color) {
+            else
+                if (fila + i + 1 < 8 && col - i - 1 >= 0 &&
+                    m_tauler[fila + i][col - i].getTipus() != TIPUS_EMPTY &&
+                    m_tauler[fila + i][col - i].getColor() != color &&
+                    m_tauler[fila + 1 + i][col - i - 1].getTipus() == TIPUS_EMPTY) {
                     return true;
                 }
                 else
-                    if (fila - i - 1 >= 0 && col + i + 1 < 8 && m_tauler[fila - i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila - i - 1][col + i + 1].getColor() != color) {
+                    if (fila - i - 1 >= 0 && col + i + 1 < 8 && 
+                        m_tauler[fila - i][col + i].getTipus() != TIPUS_EMPTY && 
+                        m_tauler[fila - i][col + i].getColor() != color &&
+                        m_tauler[fila - 1 - i][col + i + 1].getTipus() == TIPUS_EMPTY) {
                         return true;
                     }
                     else
-                        if (fila - i - 1 >= 8 && col - i - 1 >= 0 && m_tauler[fila + i][col + i].getTipus() != TIPUS_EMPTY && m_tauler[fila - i - 1][col - i - 1].getColor() != color) {
+                        if (fila - i - 1 >= 0 && col - i - 1 >= 0 &&
+                            m_tauler[fila - i][col - i].getTipus() != TIPUS_EMPTY &&
+                            m_tauler[fila - i][col - i].getColor() != color &&
+                            m_tauler[fila - 1 - i][col - i - 1].getTipus() == TIPUS_EMPTY) {
                             return true;
                         }
                
@@ -595,4 +562,102 @@ bool Tauler::bufar(Posicio pos)
 
     }
     return false;
+}
+
+void Tauler::bufar2(ColorFitxa color)
+{
+    for (int i = 0; i < N_FILES; i++)
+    {
+        for (int j = 0; j < N_COLUMNES; j++)
+        {
+            if (m_tauler[i][j].getTipus() == TIPUS_NORMAL)
+            {
+                if (m_tauler[i][j].getColor() == COLOR_BLANC)
+                {
+                    if (i + 1 < 8 && j + 1 < 8 &&
+                        m_tauler[i][j].getColor() == color &&
+                        m_tauler[i + 1][j + 1].getTipus() != TIPUS_EMPTY &&
+                        m_tauler[i + 2][j + 2].getTipus() == TIPUS_EMPTY &&
+                        m_tauler[i + 1][j + 1].getColor() != color)
+                    {
+                        m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                    }
+
+                    if (i + 1 < 8 && j - 1 >= 0 &&
+                        m_tauler[i][j].getColor() == color &&
+                        m_tauler[i + 1][j - 1].getTipus() != TIPUS_EMPTY &&
+                        m_tauler[i + 2][j - 2].getTipus() == TIPUS_EMPTY &&
+                        m_tauler[i + 1][j - 1].getColor() != color)
+                    {
+                        m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                    }
+                }
+                else {
+                    if (i - 1 >= 0 && j + 1 < 8 &&
+                        m_tauler[i][j].getColor() == color &&
+                        m_tauler[i - 1][j + 1].getTipus() != TIPUS_EMPTY &&
+                        m_tauler[i - 2][j + 2].getTipus() == TIPUS_EMPTY &&
+                        m_tauler[i - 1][j + 1].getColor() != color)
+                    {
+                        m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                    }
+
+                    if (i - 1 >= 0 && j - 1 >= 0 &&
+                        m_tauler[i][j].getColor() == color &&
+                        m_tauler[i - 1][j - 1].getTipus() != TIPUS_EMPTY &&
+                        m_tauler[i - 2][j - 2].getTipus() == TIPUS_EMPTY &&
+                        m_tauler[i - 1][j - 1].getColor() != color)
+                    {
+                        m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                    }
+                }
+            }
+
+            else
+            {
+                if (m_tauler[i][j].getTipus() == TIPUS_DAMA)
+                {
+                    for (int k = 0; k < N_FILES; k++)
+                    {
+                        if (i + k + 1 < 8 && j + k + 1 < 8 &&
+                            m_tauler[i][j].getColor() == color &&
+                            m_tauler[i + k][j + k].getTipus() != TIPUS_EMPTY &&
+                            m_tauler[i + k][j + k].getColor() != color &&
+                            m_tauler[i + k + 1][j + k + 1].getTipus() == TIPUS_EMPTY)
+                        {
+                            m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                        }
+
+                        if (i + k + 1 < 8 && j - k - 1 >= 0 &&
+                            m_tauler[i][j].getColor() == color &&
+                            m_tauler[i + k][j - k].getTipus() != TIPUS_EMPTY &&
+                            m_tauler[i + k][j - k].getColor() != color &&
+                            m_tauler[i + k + 1][j - k - 1].getTipus() == TIPUS_EMPTY)
+                        {
+                            m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                        }
+
+                        if (i - k - 1 >= 0 && j + k + 1 < 8 &&
+                            m_tauler[i][j].getColor() == color &&
+                            m_tauler[i - k][j + k].getTipus() != TIPUS_EMPTY &&
+                            m_tauler[i - k][j + k].getColor() != color &&
+                            m_tauler[i - k - 1][j + k + 1].getTipus() == TIPUS_EMPTY)
+                        {
+                            m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                        }
+
+
+                        if (i - k - 1 >= 0 && j - k - 1 >= 0 &&
+                            m_tauler[i][j].getColor() == color &&
+                            m_tauler[i - k][j - k].getTipus() != TIPUS_EMPTY &&
+                            m_tauler[i - k][j - k].getColor() != color &&
+                            m_tauler[i - k - 1][j - k - 1].getTipus() == TIPUS_EMPTY)
+                        {
+                            m_tauler[i][j].setTipus(TIPUS_EMPTY);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

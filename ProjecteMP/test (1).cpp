@@ -4,8 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-using namespace std;
 
+using namespace std;
 using json = nlohmann::json;
 
 const int N_FILES_TAULER = 8;
@@ -15,56 +15,56 @@ const int MAX_POSICIONS_POSSIBLES = 10;
 
 void mostraBool(bool valor, stringstream& outputParcial)
 {
-	if (valor)
-		outputParcial << "TRUE ";
-	else
-		outputParcial << "FALSE ";
+    if (valor)
+        outputParcial << "TRUE ";
+    else
+        outputParcial << "FALSE ";
 }
 
 void mostraArray(Posicio array[], int nElements, stringstream& outputParcial)
 {
-	outputParcial << "[";
-	for (int i = 0; i < (nElements - 1); i++)
-		outputParcial << array[i] << ", ";
-	if (nElements > 0)
-		outputParcial << array[nElements - 1];
-	outputParcial << "]" << endl;
+    outputParcial << "[";
+    for (int i = 0; i < (nElements - 1); i++)
+        outputParcial << array[i] << ", ";
+    if (nElements > 0)
+        outputParcial << array[nElements - 1];
+    outputParcial << "]" << endl;
 }
 
 bool pertanyElement(const Posicio& element, Posicio array[], int nElements)
 {
-	bool trobat = false;
-	int i = 0;
-	while ((i < nElements) && !trobat)
-	{
-		if (element == array[i])
-			trobat = true;
-		else
-			i++;
-	}
-	return trobat;
+    bool trobat = false;
+    int i = 0;
+    while ((i < nElements) && !trobat)
+    {
+        if (element == array[i])
+            trobat = true;
+        else
+            i++;
+    }
+    return trobat;
 }
 
 bool igualArrays(Posicio array1[], int nElements1, Posicio array2[], int nElements2)
 {
-	bool iguals = true;
-	int i = 0;
-	while ((i < nElements1) && iguals)
-	{
-		if (!pertanyElement(array1[i], array2, nElements2))
-			iguals = false;
-		else
-			i++;
-	}
-	i = 0;
-	while ((i < nElements2) && iguals)
-	{
-		if (!pertanyElement(array2[i], array1, nElements1))
-			iguals = false;
-		else
-			i++;
-	}
-	return iguals;
+    bool iguals = true;
+    int i = 0;
+    while ((i < nElements1) && iguals)
+    {
+        if (!pertanyElement(array1[i], array2, nElements2))
+            iguals = false;
+        else
+            i++;
+    }
+    i = 0;
+    while ((i < nElements2) && iguals)
+    {
+        if (!pertanyElement(array2[i], array1, nElements1))
+            iguals = false;
+        else
+            i++;
+    }
+    return iguals;
 }
 
 
@@ -74,16 +74,17 @@ void mostraTauler(char tauler[N_FILES_TAULER][N_COLUMNES_TAULER], stringstream& 
     for (int fila = 0; fila < N_FILES_TAULER; fila++)
     {
         outputParcial << to_string(N_FILES_TAULER - fila) + ": ";
-        for (int col = 0; col < N_COLUMNES_TAULER; col++){
+        for (int col = 0; col < N_COLUMNES_TAULER; col++)
+        {
             outputParcial << tauler[fila][col];
-            if (col != N_COLUMNES_TAULER -1)
+            if (col != N_COLUMNES_TAULER - 1)
             {
-                outputParcial <<  " ";
+                outputParcial << " ";
             }
         }
         outputParcial << endl;
     }
-    
+
     outputParcial << "   a b c d e f g h" << endl;
 }
 
@@ -93,7 +94,7 @@ bool comprovaTauler(char taulerEsperat[N_FILES_TAULER][N_COLUMNES_TAULER], strin
     int fila = 0;
     int indexString = 0;
     int longitudString = taulerObtingut.length();
-    while (iguals && (fila < N_FILES_TAULER) && (indexString < longitudString))    
+    while (iguals && (fila < N_FILES_TAULER) && (indexString < longitudString))
     {
         int columna = 0;
         while (iguals && (columna < N_COLUMNES_TAULER) && (indexString < longitudString))
@@ -107,10 +108,12 @@ bool comprovaTauler(char taulerEsperat[N_FILES_TAULER][N_COLUMNES_TAULER], strin
                     columna++;
                 }
             else
-                indexString++; 
+                indexString++;
         }
         fila++;
     }
+    if ((iguals) && (fila != N_FILES_TAULER))
+        iguals = false;
     return iguals;
 }
 
@@ -174,7 +177,7 @@ float testTauler(int nTest, const string& nomFitxer, char taulerEsperat[N_FILES_
     outputParcial << "---------------" << endl;
     outputParcial << "Contingut obtingut del tauler: " << endl;
     string taulerObtingut = tauler.toString();
-    outputParcial << taulerObtingut << endl; 
+    outputParcial << taulerObtingut << endl;
     outputParcial << "---------------" << endl;
 
     bool correcte = comprovaTauler(taulerEsperat, taulerObtingut);
@@ -192,7 +195,7 @@ float testTauler(int nTest, const string& nomFitxer, char taulerEsperat[N_FILES_
     }
 
     outputParcial << "-----------------------------------------------" << endl;
-    
+
     cout << outputParcial.str();
     outputTest["output"] = outputParcial.str();
     outputParcial.str("");
@@ -211,9 +214,9 @@ float testTauler(int nTest, const string& nomFitxer, char taulerEsperat[N_FILES_
 
 float testLlegeixTauler(json& outputGeneral)
 {
-	float reduccio = 0.0;
+    float reduccio = 0.0;
 
-    char taulerEsperat1[N_FILES_TAULER][N_COLUMNES_TAULER] = 
+    char taulerEsperat1[N_FILES_TAULER][N_COLUMNES_TAULER] =
     {
         {'_', 'X', '_', 'X', '_', 'X', '_', 'X'},
         {'X', '_', 'X', '_', 'X', '_', 'X', '_'},
@@ -225,7 +228,7 @@ float testLlegeixTauler(json& outputGeneral)
         {'O', '_', 'O', '_', 'O', '_', 'O', '_'}
     };
 
-    char taulerEsperat2[N_FILES_TAULER][N_COLUMNES_TAULER] = 
+    char taulerEsperat2[N_FILES_TAULER][N_COLUMNES_TAULER] =
     {
         {'_', 'X', '_', 'D', '_', '_', '_', 'X'},
         {'_', '_', '_', '_', '_', '_', '_', '_'},
@@ -251,7 +254,7 @@ float testMovimentsValids(json& outputGeneral)
     float grade = outputGeneral["score"];
 
     ofstream jsonFile;
-    char taulerEsperat[N_FILES_TAULER][N_COLUMNES_TAULER] = 
+    char taulerEsperat[N_FILES_TAULER][N_COLUMNES_TAULER] =
     {
         {'_', 'X', '_', '_', '_', '_', '_', 'X'},
         {'X', '_', 'X', '_', '_', '_', '_', '_'},
@@ -264,7 +267,7 @@ float testMovimentsValids(json& outputGeneral)
     };
     const int N_PROVES = 12;
     string posicions[N_PROVES] = { "b8", "a1", "c1", "h2", "d4", "b6", "f4", "a7", "e3", "a5", "e1", "c3" };
-    Posicio posicionsPosssiblesEperades[N_PROVES][MAX_POSICIONS_POSSIBLES] = 
+    Posicio posicionsPosssiblesEperades[N_PROVES][MAX_POSICIONS_POSSIBLES] =
     {
         {},
         {},
@@ -281,9 +284,9 @@ float testMovimentsValids(json& outputGeneral)
     };
     int nPosicionsEsperades[N_PROVES] = { 0, 0, 1, 1, 1, 1, 2, 2, 3, 0, 3, 4 };
     string nomFitxer = "tauler_moviments_valids.txt";
-    for (int i = 0; i < N_PROVES;  i++)
+    for (int i = 0; i < N_PROVES; i++)
     {
-		json outputTest;
+        json outputTest;
         stringstream outputParcial;
 
         outputTest =
@@ -299,17 +302,17 @@ float testMovimentsValids(json& outputGeneral)
         outputParcial << endl;
         outputParcial << "Llegint estat del tauler del fitxer '" << nomFitxer << "'" << endl;
         outputParcial << "---------------" << endl;
-    
+
         Tauler tauler;
         tauler.inicialitza(nomFitxer);
-    
+
         outputParcial << "Contingut esperat del tauler: " << endl;
         mostraTauler(taulerEsperat, outputParcial);
         outputParcial << "---------------" << endl;
         outputParcial << "Contingut obtingut del tauler: " << endl;
         tauler.actualitzaMovimentsValids();
         string taulerObtingut = tauler.toString();
-        outputParcial << taulerObtingut << endl; 
+        outputParcial << taulerObtingut << endl;
         outputParcial << "---------------" << endl;
         outputParcial << "Recuperant posicions possibles de la posicio: " << posicions[i] << endl;
         outputParcial << "----------" << endl;
@@ -319,7 +322,7 @@ float testMovimentsValids(json& outputGeneral)
         int nPosicionsPossibles;
         Posicio posicionsPosssibles[MAX_POSICIONS_POSSIBLES];
         tauler.getPosicionsPossibles(Posicio(posicions[i]), nPosicionsPossibles, posicionsPosssibles);
-        outputParcial << "Posicions possibles obtingudes: ";
+        outputParcial << "Posicions possibles obitngudes: ";
         mostraArray(posicionsPosssibles, nPosicionsPossibles, outputParcial);
         outputParcial << "----------" << endl;
         bool correcte = igualArrays(posicionsPosssiblesEperades[i], nPosicionsEsperades[i], posicionsPosssibles, nPosicionsPossibles);
@@ -335,13 +338,13 @@ float testMovimentsValids(json& outputGeneral)
             reduccio += 1.0;
             outputTest["status"] = "failed";
         }
-    
+
         outputParcial << "-----------------------------------------------" << endl;
-        
+
         cout << outputParcial.str();
         outputTest["output"] = outputParcial.str();
         outputParcial.str("");
-    
+
         outputGeneral["score"] = grade;
         outputGeneral["tests"].push_back(outputTest);
         jsonFile.open("results.json");
@@ -365,8 +368,8 @@ float testMovimentFitxa(json& outputGeneral)
     string posicioInicial[N_PROVES] = { "b8", "c3", "d4", "d4", "h8", "d4", "g7", "a3", "b4", "h8" };
     string posicioFinal[N_PROVES] = { "c7", "d4", "f6", "h8", "d4", "g7", "d4", "b4", "d6", "a5" };
     bool resultatEsperat[N_PROVES] = { false, true, true, true, true, true, true, true, true, true };
-    string comentariMoviment[N_PROVES] = 
-    { 
+    string comentariMoviment[N_PROVES] =
+    {
         "Moviment no valid",
         "Moviment fitxa normal sense matar",
         "Moviment fitxa normal amb captura",
@@ -382,9 +385,9 @@ float testMovimentFitxa(json& outputGeneral)
 
 
 
-    for (int i = 0; i < N_PROVES;  i++)
+    for (int i = 0; i < N_PROVES; i++)
     {
-		json outputTest;
+        json outputTest;
         stringstream outputParcial;
 
         outputTest =
@@ -401,10 +404,10 @@ float testMovimentFitxa(json& outputGeneral)
         string nomFitxer = nomFitxerInicial + to_string(i + 1) + ".txt";
         outputParcial << "Llegint estat del tauler del fitxer '" << nomFitxer << "'" << endl;
         outputParcial << "---------------" << endl;
-    
+
         Tauler tauler;
         tauler.inicialitza(nomFitxer);
-    
+
         outputParcial << "Contingut del tauler inicial: " << endl;
         char estatTaulerInicial[N_FILES_TAULER][N_COLUMNES_TAULER];
         llegeixTauler(nomFitxer, estatTaulerInicial);
@@ -414,7 +417,7 @@ float testMovimentFitxa(json& outputGeneral)
         outputParcial << "Executant moviment de posicio: " << posicioInicial[i] << " a posicio " << posicioFinal[i] << endl;
         outputParcial << comentariMoviment[i] << endl;
         outputParcial << "---------------" << endl;
-        
+
         bool resultat = tauler.mouFitxa(Posicio(posicioInicial[i]), Posicio(posicioFinal[i]));
 
         outputParcial << "Resultat esperat del moviment: ";
@@ -449,13 +452,13 @@ float testMovimentFitxa(json& outputGeneral)
             reduccio += 0.5;
             outputTest["status"] = "failed";
         }
-    
+
         outputParcial << "-----------------------------------------------" << endl;
-        
+
         cout << outputParcial.str();
         outputTest["output"] = outputParcial.str();
         outputParcial.str("");
-    
+
         outputGeneral["score"] = grade;
         outputGeneral["tests"].push_back(outputTest);
         jsonFile.open("results.json");
@@ -472,37 +475,37 @@ int main()
 {
     float grade = 0.0;
 
-	json output;
-	ofstream jsonFile;
+    json output;
+    ofstream jsonFile;
 
-	output["score"] = grade;
-	output["visibility"] = "visible";
-	output["stdout_visibility"] = "visible";
-	output["tests"] = json::array();
+    output["score"] = grade;
+    output["visibility"] = "visible";
+    output["stdout_visibility"] = "visible";
+    output["tests"] = json::array();
 
-	jsonFile.open("results.json");
-	jsonFile << setw(4) << output << endl;
-	jsonFile.close();
+    jsonFile.open("results.json");
+    jsonFile << setw(4) << output << endl;
+    jsonFile.close();
 
-	float reduccio = testLlegeixTauler(output);
-    grade = grade + (1 - reduccio);         
-	cout << "Grade :=>> " << grade << endl;
+    float reduccio = testLlegeixTauler(output);
+    grade = grade + (1 - reduccio);
+    cout << "Grade :=>> " << grade << endl;
     output["score"] = grade;
     jsonFile.open("results.json");
     jsonFile << setw(4) << output << endl;
     jsonFile.close();
 
-	reduccio = testMovimentsValids(output);
-    grade = grade + (6 - reduccio);         
-	cout << "Grade :=>> " << grade << endl;
+    reduccio = testMovimentsValids(output);
+    grade = grade + (6 - reduccio);
+    cout << "Grade :=>> " << grade << endl;
     output["score"] = grade;
     jsonFile.open("results.json");
     jsonFile << setw(4) << output << endl;
     jsonFile.close();
 
-	reduccio = testMovimentFitxa(output);
-    grade = grade + (3 - reduccio);         
-	cout << "Grade :=>> " << grade << endl;
+    reduccio = testMovimentFitxa(output);
+    grade = grade + (3 - reduccio);
+    cout << "Grade :=>> " << grade << endl;
     output["score"] = grade;
     jsonFile.open("results.json");
     jsonFile << setw(4) << output << endl;

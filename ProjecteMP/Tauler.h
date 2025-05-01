@@ -20,6 +20,7 @@ public:
 	string toString() const;
 	void getPosicionsPossiblesNorm(const Posicio& origen, int& nPosicions, Posicio posicionsPossibles[], int fet, ColorFitxa color);
 	bool bufar(Posicio pos);
+	void bufar2(ColorFitxa color);
 	void EliminaFitxes(Posicio origen, Posicio desti, Posicio posicionsPossibles[]);
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
